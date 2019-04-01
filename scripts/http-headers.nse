@@ -80,8 +80,7 @@ action = function(host, port)
 --       print(index,data)
 --   end
    
---  local com_str = "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
-   if result.rawheader[1]== 'ssssssssssssssssssssssssssssssssssss' then
+   if result.rawheader[1]== 'sssssssssss' then
     return teststring1
   else
     return teststring2  

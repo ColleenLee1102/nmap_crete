@@ -46,12 +46,27 @@ int luaS_eqlngstr (TString *a, TString *b) {
     ((len == b->u.lnglen) &&  /* equal length and ... */
      (memcmp(getstr(a), getstr(b), len) == 0));  /* equal contents */
 }
+
+//zl3 symbolic
+#include <stddef.h>
+#include <crete/custom_instr.h>
+//zl3 symbolic
 //zl3
-int eqshrstr1 (TString *a, TString *b) {
-  size_t len = a->u.lnglen;
-  //lua_assert(a->tt == LUA_TLNGSTR && b->tt == LUA_TLNGSTR);
-  return (a == b) || ((len == b->u.lnglen) &&  /* equal length and ... */
-     (memcmp(getstr(a), getstr(b), len) == 0));  /* equal contents */
+int luaS_eqlngstr1 (TString *a, TString *b) {
+	//size_t len = a->u.lnglen;
+	lua_assert(a->tt == LUA_TLNGSTR && b->tt == LUA_TLNGSTR);
+	//zl3
+
+    char *sym_v = getstr(a);
+    //crete_make_concolic(sym_v, 11, "lua_memcmp");
+    a->u.lnglen = 11;
+    size_t len = a->u.lnglen;
+    printf("length of len is %d\n", a->u.lnglen);
+
+	//zl3
+	return (a == b) ||  /* same instance or... */
+	  ((len == b->u.lnglen) &&  /* equal length and ... */
+	   (memcmp(getstr(a), getstr(b), len) == 0));  /* equal contents */
 }
 
 

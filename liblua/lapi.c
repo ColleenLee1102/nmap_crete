@@ -484,7 +484,6 @@ LUA_API const char *lua_pushlstring (lua_State *L, const char *s, size_t len) {
   lua_lock(L);
   ts = (len == 0) ? luaS_new(L, "") : luaS_newlstr(L, s, len);
   setsvalue2s(L, L->top, ts);
-  L->scan_flag = 0;//zl3
   api_incr_top(L);
   luaC_checkGC(L);
   lua_unlock(L);
@@ -494,7 +493,7 @@ LUA_API const char *lua_pushlstring (lua_State *L, const char *s, size_t len) {
 LUA_API char *lua_pushlstring3 (lua_State *L, const char *s, size_t len) {
   TString *ts;
   lua_lock(L);
-  //
+  /**
   char* pch;
   pch = strtok(s, "\r\n");
   int i = 0;
@@ -502,10 +501,10 @@ LUA_API char *lua_pushlstring3 (lua_State *L, const char *s, size_t len) {
   {
   	if(i ==1){
   		size_t sym_len = strlen(pch);
-  		//crete_make_concolic(pch, sym_len, "lua_ultimate");
-//  		char tem_buff[sym_len];
-//  		memset(tem_buff, 's', sym_len);
-//  		memcpy(pch, tem_buff,sym_len);
+  		crete_make_concolic(pch, sym_len, "lua_ultimate");
+  		char tem_buff[11];
+  		memset(tem_buff, 's', 11);
+  		memcpy(pch, tem_buff,11);
   		printf("sym_len is %d\n", sym_len);
   		printf("pch_len is %d\n", strlen(pch));
   	}
@@ -513,25 +512,12 @@ LUA_API char *lua_pushlstring3 (lua_State *L, const char *s, size_t len) {
   	pch = strtok (NULL, "\r\n");
   	i++;
   }
-  //
+  **/
   ts = (len == 0) ? luaS_new(L, "") : luaS_newlstr(L, s, len);
   setsvalue2s(L, L->top, ts);
   api_incr_top(L);
   luaC_checkGC(L);
   lua_unlock(L);
-
-  //set marker here:
-//  char* p = strtok(s, "\r\n");
-//  p = strtok(NULL, "\r\n");
-//  global_State *g = G(L);
-//  g->ad_start = getstr(ts);
-//  g->ad_end = getstr(ts) + len;
-//  g->sym_buff = malloc(strlen(p)*sizeof(char));
-//  memcpy((g->sym_buff), p, strlen(p));
-//  puts(p);
-//  printf("sym_buff is %s\n", g->sym_buff);
-//  g->sym_marker = 111;
-  //set marker end
 
   return getstr(ts);
 }

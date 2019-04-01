@@ -426,7 +426,7 @@ int luaV_equalobj (lua_State *L, const TValue *t1, const TValue *t2) {
     case LUA_TLIGHTUSERDATA: return pvalue(t1) == pvalue(t2);
     case LUA_TLCF: return fvalue(t1) == fvalue(t2);
     case LUA_TSHRSTR:
-    	//zl3
+    	//zl3 277 <-> 22
     	//if(L != NULL && L->scan_flag == 99 && L->special_flag == 101){
     	if(b_value == 11 && c_value == 277){
     		printf("short entered make concolic branches, b_value is %d, c_value is %d\n", b_value, c_value);
@@ -492,7 +492,7 @@ int luaV_equalobj (lua_State *L, const TValue *t1, const TValue *t2) {
     	if(b_value == 11 && c_value == 277){
     		//printf("zl3 long1\n");
     		printf("long entered make concolic branches, b_value is %d, c_value is %d\n", b_value, c_value);
-    		return luaS_eqlngstr(tsvalue(t1), tsvalue(t2));
+    		return luaS_eqlngstr1(tsvalue(t1), tsvalue(t2));
 
     	}else{
     		//printf("zl3 long\n");
