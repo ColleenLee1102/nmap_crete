@@ -653,7 +653,8 @@ char* read_testcase_in_buff(){
 	  printf("\n");
    }
 	return buff;
-}**/
+}
+**/
 //zl3 reading test case
 
 static void receive_callback (nsock_pool nsp, nsock_event nse, void *udata)
@@ -675,6 +676,7 @@ static void receive_callback (nsock_pool nsp, nsock_event nse, void *udata)
     }else{
     	lua_pushlstring(L, str, len);
     }
+    //zl3
     //lua_pushlstring(L, str, len);
     nse_restore(L, 2);
   }

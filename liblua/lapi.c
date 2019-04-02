@@ -31,7 +31,7 @@
 
 //zl3 symbolic
 #include <stddef.h>
-//#include <crete/custom_instr.h>
+#include <crete/custom_instr.h>
 //zl3 symbolic
 
 const char lua_ident[] =
@@ -493,31 +493,54 @@ LUA_API const char *lua_pushlstring (lua_State *L, const char *s, size_t len) {
 LUA_API char *lua_pushlstring3 (lua_State *L, const char *s, size_t len) {
   TString *ts;
   lua_lock(L);
-  /**
+
+  //zl3
+  printf("original s is %s\n",s);
   char* pch;
   pch = strtok(s, "\r\n");
+  size_t m_len = strlen(s);
+
   int i = 0;
+  char* temp;
+  size_t temp_len;
   while (pch != NULL)
   {
   	if(i ==1){
   		size_t sym_len = strlen(pch);
-  		crete_make_concolic(pch, sym_len, "lua_ultimate");
-  		char tem_buff[11];
-  		memset(tem_buff, 's', 11);
-  		memcpy(pch, tem_buff,11);
   		printf("sym_len is %d\n", sym_len);
   		printf("pch_len is %d\n", strlen(pch));
+  		temp = pch;
+  		temp_len = sym_len;
+  		break;
   	}
   	printf("%d, %s\n", i, pch);
   	pch = strtok (NULL, "\r\n");
   	i++;
   }
-  **/
+
+  //resize length of string in index 2 into 11
+  size_t rem_size = len- ((temp+temp_len+2-1)- s+ 1);
+  strncpy(temp+11, "\r\n", 2);
+  memmove(temp+11+2,temp+temp_len+2, rem_size);
+
+  size_t last_char = rem_size+ 11+ 2;
+  temp[last_char]='\0';
+  strncpy(s+strlen(s), "\r\n", 2);
+  printf("after changing s is %sfinished\n",s);
+  //len has been changed
+  len = strlen(s);
+  //zl3
+
   ts = (len == 0) ? luaS_new(L, "") : luaS_newlstr(L, s, len);
   setsvalue2s(L, L->top, ts);
   api_incr_top(L);
   luaC_checkGC(L);
   lua_unlock(L);
+
+  //zl3 make symbolic
+  char *sym_strstruct = getstr(ts);
+  crete_make_concolic(sym_strstruct+ m_len+ 2, 11, "lua_strstruct");
+  //zl3
 
   return getstr(ts);
 }
