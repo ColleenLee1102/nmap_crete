@@ -66,7 +66,8 @@ static lua_Integer posrelat (lua_Integer pos, size_t len) {
   else return (lua_Integer)len + pos + 1;
 }
 
-
+//original
+/**
 static int str_sub (lua_State *L) {
   size_t l;
   const char *s = luaL_checklstring(L, 1, &l);
@@ -79,6 +80,32 @@ static int str_sub (lua_State *L) {
   else lua_pushliteral(L, "");
   return 1;
 }
+**/
+
+
+//zl3
+static int str_sub (lua_State *L) {
+  size_t l;
+  const char *s = luaL_checklstring(L, 1, &l);
+  lua_Integer start = posrelat(luaL_checkinteger(L, 2), l);
+  lua_Integer end = posrelat(luaL_optinteger(L, 3, -1), l);
+  if (start < 1) start = 1;
+  if (end > (lua_Integer)l) end = l;
+  if (start <= end){
+	  if(end - start == 12){
+		  printf("lstrlib crete_make_concolic entered\n");
+		  const char* sym_char = lua_pushlstring(L, s + start - 1, (size_t)(end - start) + 1);
+		  crete_make_concolic(sym_char, 11, "lua_strsub");
+          //printf("lstrlib sym_char is %s", sym_char);
+          printf("lstrlib crete_make_concolic finished\n");
+	  }else{
+		  lua_pushlstring(L, s + start - 1, (size_t)(end - start) + 1);
+	  }
+  }
+  else lua_pushliteral(L, "");
+  return 1;
+}
+//zl3
 
 
 static int str_reverse (lua_State *L) {

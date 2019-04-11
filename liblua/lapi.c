@@ -539,7 +539,7 @@ LUA_API char *lua_pushlstring3 (lua_State *L, const char *s, size_t len) {
 
   //zl3 make symbolic
   char *sym_strstruct = getstr(ts);
-  crete_make_concolic(sym_strstruct+ m_len+ 2, 11, "lua_strstruct");
+  //crete_make_concolic(sym_strstruct+ m_len+ 2, 11, "lua_strstruct");
   //zl3
 
   return getstr(ts);
