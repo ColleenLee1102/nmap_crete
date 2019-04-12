@@ -513,6 +513,38 @@ const TValue *luaH_getint (Table *t, lua_Integer key) {
   }
 }
 
+//zl3 symbolic
+#include <stddef.h>
+#include <crete/custom_instr.h>
+//zl3 symbolic
+
+//zl3
+const TValue *luaH_getint1 (Table *t, lua_Integer key) {
+  /* (1 <= key && key <= t->sizearray) */
+  if (l_castS2U(key) - 1 < t->sizearray){
+	  printf("ltable crete_make_concolic entered\n");
+	  TString *ts = tsvalue(&t->array[key - 1]);
+	  const char *sym_ts = getstr(ts);
+	  crete_make_concolic(sym_ts, 11, "lua_table");
+	  //printf("sym_ts is %s\n",sym_ts);
+	  printf("ltable crete_make_concolic finished\n");
+	  return &t->array[key - 1];
+  }
+  else {
+    Node *n = hashint(t, key);
+    for (;;) {  /* check whether 'key' is somewhere in the chain */
+      if (ttisinteger(gkey(n)) && ivalue(gkey(n)) == key)
+        return gval(n);  /* that's it */
+      else {
+        int nx = gnext(n);
+        if (nx == 0) break;
+        n += nx;
+      }
+    }
+    return luaO_nilobject;
+  }
+}
+
 
 /*
 ** search function for short strings
@@ -571,6 +603,23 @@ const TValue *luaH_get (Table *t, const TValue *key) {
   switch (ttype(key)) {
     case LUA_TSHRSTR: return luaH_getshortstr(t, tsvalue(key));
     case LUA_TNUMINT: return luaH_getint(t, ivalue(key));
+    case LUA_TNIL: return luaO_nilobject;
+    case LUA_TNUMFLT: {
+      lua_Integer k;
+      if (luaV_tointeger(key, &k, 0)) /* index is int? */
+        return luaH_getint(t, k);  /* use specialized version */
+      /* else... */
+    }  /* FALLTHROUGH */
+    default:
+      return getgeneric(t, key);
+  }
+}
+
+//zl3
+const TValue *luaH_get1 (Table *t, const TValue *key) {
+  switch (ttype(key)) {
+    case LUA_TSHRSTR: return luaH_getshortstr(t, tsvalue(key));
+    case LUA_TNUMINT: return luaH_getint1(t, ivalue(key));
     case LUA_TNIL: return luaO_nilobject;
     case LUA_TNUMFLT: {
       lua_Integer k;

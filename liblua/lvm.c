@@ -852,6 +852,10 @@ void luaV_finishOp (lua_State *L) {
 #define gettableProtected(L,t,k,v)  { const TValue *slot; \
   if (luaV_fastget(L,t,k,slot,luaH_get)) { setobj2s(L, v, slot); } \
   else Protect(luaV_finishget(L,t,k,v,slot)); }
+//zl3
+#define gettableProtected1(L,t,k,v)  { const TValue *slot; \
+  if (luaV_fastget(L,t,k,slot,luaH_get1)) { setobj2s(L, v, slot); } \
+  else Protect(luaV_finishget(L,t,k,v,slot)); }
 
 
 /* same for 'luaV_settable' */
@@ -963,7 +967,16 @@ void luaV_execute (lua_State *L) {
       vmcase(OP_GETTABLE) {
         StkId rb = RB(i);
         TValue *rc = RKC(i);
-        gettableProtected(L, rb, rc, ra);
+        //zl3
+        b_value = GETARG_B(i);
+        c_value = GETARG_C(i);
+        if(b_value == 11 && c_value == 276){
+        	printf("rawheader table\n");
+        	gettableProtected1(L, rb, rc, ra);
+        }else{
+        	gettableProtected(L, rb, rc, ra);
+        }
+        //gettableProtected(L, rb, rc, ra);
         vmbreak;
       }
       vmcase(OP_SETTABUP) {
