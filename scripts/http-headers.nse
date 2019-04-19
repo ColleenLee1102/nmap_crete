@@ -72,18 +72,27 @@ action = function(host, port)
 --    print "branch 22"  
 --  end
 
-
-   local string1 = nil
 --   local t = result.rawheader
 --   for index, data in ipairs(t) do
 --       print "zheli table" 
 --       print(index,data)
 --   end
-   
-   if result.rawheader[1]== 'sssssssssss' then
-    return teststring1
+
+-- add complexity
+   local duplicate = result.rawheader[1]
+
+-- if result.rawheader[1]== 'sssssssssss' then
+
+   if duplicate == 'sssssssssss' then
+    print(teststring1)
   else
-    return teststring2  
+    print(teststring2)  
+  end
+    
+  if duplicate == 'aaaaaaaaaaad' then
+    return "complex1"
+  else
+    return "complex2"
   end
 
 --  table.insert(result.rawheader, "(Request type: " .. request_type .. ")")

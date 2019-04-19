@@ -970,7 +970,8 @@ void luaV_execute (lua_State *L) {
         //zl3
         b_value = GETARG_B(i);
         c_value = GETARG_C(i);
-        if(b_value == 11 && c_value == 276){
+        //276 <> 21
+        if(b_value == 10 && c_value == 276){
         	printf("rawheader table\n");
         	gettableProtected1(L, rb, rc, ra);
         }else{

@@ -516,18 +516,27 @@ const TValue *luaH_getint (Table *t, lua_Integer key) {
 //zl3 symbolic
 #include <stddef.h>
 #include <crete/custom_instr.h>
+static int call_count = 0;
 //zl3 symbolic
 
 //zl3
 const TValue *luaH_getint1 (Table *t, lua_Integer key) {
   /* (1 <= key && key <= t->sizearray) */
   if (l_castS2U(key) - 1 < t->sizearray){
-	  printf("ltable crete_make_concolic entered\n");
-	  TString *ts = tsvalue(&t->array[key - 1]);
-	  const char *sym_ts = getstr(ts);
-	  crete_make_concolic(sym_ts, 11, "lua_table");
-	  //printf("sym_ts is %s\n",sym_ts);
-	  printf("ltable crete_make_concolic finished\n");
+
+	  if(call_count == 0){
+
+		  printf("ltable crete_make_concolic entered\n");
+		  TString *ts = tsvalue(&t->array[key - 1]);
+		  const char *sym_ts = getstr(ts);
+		  //crete_make_concolic(sym_ts, 11, "lua_table");
+		  call_count++;
+		  printf("ltable crete_make_concolic finished\n");
+
+	  }else{
+		  printf("print not make concolic, %d\n", call_count);
+	  }
+
 	  return &t->array[key - 1];
   }
   else {
