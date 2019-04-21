@@ -79,17 +79,17 @@ action = function(host, port)
 --   end
 
 -- add complexity
-   local duplicate = result.rawheader[1]
 
--- if result.rawheader[1]== 'sssssssssss' then
-
-   if duplicate == 'sssssssssss' then
+  if result.rawheader[1]== 'sssssssssss' then
+--   if duplicate == 'sssssssssss' then
     print(teststring1)
   else
     print(teststring2)  
   end
+  
+  local duplicate = result.rawheader[1]
     
-  if duplicate == 'aaaaaaaaaaad' then
+  if duplicate == 'abcabcabcqq' then
     return "complex1"
   else
     return "complex2"
