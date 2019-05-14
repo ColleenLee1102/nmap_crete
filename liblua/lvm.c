@@ -970,14 +970,16 @@ void luaV_execute (lua_State *L) {
         //zl3
         b_value = GETARG_B(i);
         c_value = GETARG_C(i);
-        //276 <> 21
-        if(b_value == 10 && c_value == 276){
+        //276 <> 21 pinpoint make concolic
+        /**
+        if(b_value == 10 && c_value == 277){
         	printf("rawheader table\n");
         	gettableProtected1(L, rb, rc, ra);
         }else{
         	gettableProtected(L, rb, rc, ra);
         }
-        //gettableProtected(L, rb, rc, ra);
+        **/
+        gettableProtected(L, rb, rc, ra);
         vmbreak;
       }
       vmcase(OP_SETTABUP) {

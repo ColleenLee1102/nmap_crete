@@ -495,7 +495,8 @@ LUA_API char *lua_pushlstring3 (lua_State *L, const char *s, size_t len) {
   lua_lock(L);
 
   //zl3
-  printf("original s is %s\n",s);
+  printf("entered lua_pushlstring3\n");
+  //printf("original s is %s\n",s);
   char* pch;
   pch = strtok(s, "\r\n");
   size_t m_len = strlen(s);
@@ -507,13 +508,13 @@ LUA_API char *lua_pushlstring3 (lua_State *L, const char *s, size_t len) {
   {
   	if(i ==1){
   		size_t sym_len = strlen(pch);
-  		printf("sym_len is %d\n", sym_len);
-  		printf("pch_len is %d\n", strlen(pch));
+  		//printf("sym_len is %d\n", sym_len);
+  		//printf("pch_len is %d\n", strlen(pch));
   		temp = pch;
   		temp_len = sym_len;
   		break;
   	}
-  	printf("%d, %s\n", i, pch);
+  	//printf("%d, %s\n", i, pch);
   	pch = strtok (NULL, "\r\n");
   	i++;
   }
@@ -526,7 +527,7 @@ LUA_API char *lua_pushlstring3 (lua_State *L, const char *s, size_t len) {
   size_t last_char = rem_size+ 11+ 2;
   temp[last_char]='\0';
   strncpy(s+strlen(s), "\r\n", 2);
-  printf("after changing s is %sfinished\n",s);
+  //printf("after changing s is %sfinished\n",s);
   //len has been changed
   len = strlen(s);
   //zl3

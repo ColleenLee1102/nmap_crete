@@ -3,6 +3,8 @@ local nmap = require "nmap"
 local shortport = require "shortport"
 local stdnse = require "stdnse"
 local table = require "table"
+--zl3 crete lib
+local crete = require "crete"
 
 description = [[
 Performs a HEAD request for the root folder ("/") of a web server and displays the HTTP headers returned.
@@ -79,7 +81,7 @@ action = function(host, port)
 --   end
 
 -- add complexity
-
+  crete.mconcolic(result.rawheader[1],11)
   if result.rawheader[1]== 'sssssssssss' then
 --   if duplicate == 'sssssssssss' then
     print(teststring1)
