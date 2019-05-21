@@ -84,7 +84,8 @@ local function check_response(response)
     return true
   end
   --if response.body:find("[Ss][Ee][Rr][Vv][Ee][Rr]%s*[Ee][Rr][Rr][Oo][Rr]") or response.body:find("[Ss][Qq][Ll]%s*[Ee][Rr][Rr][Oo][Rr]") then
-  if response.body:find("[Ss][Ee][Rr][Vv][Ee][Rr] [Ee][Rr][Rr][Oo][Rr]") then
+  --if response.body:find("[Ss][Ee][Rr][Vv][Ee][Rr] [Ee][Rr][Rr][Oo][Rr]") then
+  if response.body:find("SERVER ERROR") then
     return true
   end
   return false
