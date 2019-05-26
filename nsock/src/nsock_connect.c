@@ -253,6 +253,7 @@ void nsock_connect_internal(struct npool *ms, struct nevent *nse, int type, int 
       memcpy(&iod->peer, ss, sslen);
     iod->peerlen = sslen;
 
+    //zl3 where it is actually doing the connect()
     if (ms->engine->io_operations->iod_connect(ms, iod->sd, (struct sockaddr *)ss, sslen) == -1) {
       int err = socket_errno();
 
