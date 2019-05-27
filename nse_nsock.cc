@@ -430,15 +430,15 @@ static nse_nsock_udata *check_nsock_udata (lua_State *L, int idx, bool open)
 
 /* If the socket udata nu is not open, return from the enclosing function with
    an error. */
-/**
 #define NSOCK_UDATA_ENSURE_OPEN(L, nu) \
 do { \
   if (nu->nsiod == NULL) \
     return nseU_safeerror(L, "socket must be connected"); \
 } while (0)
-**/
+
 
 //zl3 new check if connected
+/**
 #define NSOCK_UDATA_ENSURE_OPEN(L, nu) \
 do { \
    if (nu->nsiod == NULL) \
@@ -447,11 +447,12 @@ do { \
      FILE *fp; \
      fp = fopen("/home/zheli/test/respond.txt", "r"); \
      if(fp) {\
-       int fd_int fileno(fd); \
+       int fd_int = fileno(fd); \
 	   nu->nsiod->sd = fd_int; \
      } \
     } \
 } while (0)
+**/
 
 static int l_loop (lua_State *L)
 {
@@ -687,13 +688,10 @@ static void receive_callback (nsock_pool nsp, nsock_event nse, void *udata)
     lua_pushboolean(L, true);
     //zl3
     if(o.current_scantype == SCRIPT_SCAN){
-    	//zl3 writing response body to a file
-    	FILE *fb = fopen("/home/zheli/test/respond.txt", "w");
-    	if(fb){
-    		fwrite(str, len, 1, fb);
-    		fclose(fb);
+    	FILE *fp = fopen("/home/zheli/test/response.txt", "wx");
+    	if(fp != NULL){
+    		fwrite()
     	}
-		//zl3
     	lua_pushlstring3(L, str, len);
 
     }else{

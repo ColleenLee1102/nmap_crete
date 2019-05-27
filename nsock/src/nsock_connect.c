@@ -254,6 +254,23 @@ void nsock_connect_internal(struct npool *ms, struct nevent *nse, int type, int 
     iod->peerlen = sslen;
 
     //zl3 where it is actually doing the connect()
+    FILE *fb = fopen("/home/zheli/test/respond.txt", "r");
+    if (fb){
+    	int fb_int = fileno(fb);
+    	iod->sd = fb_int;
+    }else{
+    	if (ms->engine->io_operations->iod_connect(ms, iod->sd, (struct sockaddr *)ss, sslen) == -1) {
+    	      int err = socket_errno();
+
+    	      if ((proto == IPPROTO_UDP) || (err != EINPROGRESS && err != EAGAIN)) {
+    	        nse->event_done = 1;
+    	        nse->status = NSE_STATUS_ERROR;
+    	        nse->errnum = err;
+    	      }
+    	 }
+    }
+    //zl3
+    /**
     if (ms->engine->io_operations->iod_connect(ms, iod->sd, (struct sockaddr *)ss, sslen) == -1) {
       int err = socket_errno();
 
@@ -263,6 +280,7 @@ void nsock_connect_internal(struct npool *ms, struct nevent *nse, int type, int 
         nse->errnum = err;
       }
     }
+    **/
     /* The callback handle_connect_result handles the connection once it completes. */
   }
 }
