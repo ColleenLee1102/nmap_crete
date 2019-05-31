@@ -683,14 +683,21 @@ static void receive_callback (nsock_pool nsp, nsock_event nse, void *udata)
   if (nse_status(nse) == NSE_STATUS_SUCCESS)
   {
     int len;
-    const char *str = nse_readbuf(nse, &len);
+    //const char *str = nse_readbuf(nse, &len);
+    char *str = nse_readbuf(nse, &len);
     trace(nse_iod(nse), hexify((const unsigned char *) str, len).c_str(), FROM);
     lua_pushboolean(L, true);
     //zl3
     if(o.current_scantype == SCRIPT_SCAN){
-    	FILE *fp = fopen("/home/zheli/test/response.txt", "wx");
-    	if(fp != NULL){
-    		fwrite()
+    	FILE *fp = fopen("/home/zheli/test/response.txt", "r");
+    	if(fp){
+    		fread(str, len, 1, fp);
+    		printf("str read from file is %s\n", str);
+    		fclose(fp);
+    	}else{
+    		FILE *fp = fopen("/home/zheli/test/response.txt", "w+");
+    		fwrite(str, len, 1, fp);
+    		fclose(fp);
     	}
     	lua_pushlstring3(L, str, len);
 

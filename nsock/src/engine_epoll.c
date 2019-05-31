@@ -180,6 +180,7 @@ int epoll_iod_register(struct npool *nsp, struct niod *iod, struct nevent *nse, 
     epev.events |= EPOLL_W_FLAGS;
 
   sd = nsock_iod_get_sd(iod);
+  //zl3 force to register iod
   if (epoll_ctl(einfo->epfd, EPOLL_CTL_ADD, sd, &epev) < 0)
     fatal("Unable to register IOD #%lu: %s", iod->id, strerror(errno));
 
@@ -234,6 +235,7 @@ int epoll_iod_modify(struct npool *nsp, struct niod *iod, struct nevent *nse, in
 
   sd = nsock_iod_get_sd(iod);
 
+  //zl3
   if (epoll_ctl(einfo->epfd, EPOLL_CTL_MOD, sd, &epev) < 0)
     fatal("Unable to update events for IOD #%lu: %s", iod->id, strerror(errno));
 
