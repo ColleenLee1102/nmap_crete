@@ -129,7 +129,8 @@ local function fuzz_form(form, minlen, maxlen, host, port, path)
 
   -- determine the path where the form needs to be submitted
   local form_submission_path
-  if action_absolute then
+  --if action_absolute then
+  if true then
     form_submission_path = form["action"]
   else
     local path_cropped = string.match(path, "(.*/).*")
@@ -217,7 +218,7 @@ end
 portrule = shortport.http
 
 function action(host, port)
-  local targets = stdnse.get_script_args('http-form-fuzzer.targets') or {{path="/demo.html"}}
+  local targets = stdnse.get_script_args('http-form-fuzzer.targets') or {{path="/loginclass/login.jsp"}}
   local return_table = {}
   --zl3
   local minlen = stdnse.get_script_args("http-form-fuzzer.minlength") or 11
