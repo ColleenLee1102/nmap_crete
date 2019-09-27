@@ -205,6 +205,9 @@
 extern char *optarg;
 extern int optind;
 extern NmapOps o;  /* option structure */
+//zl3 add afl flag, supposed to be global but I don't know how this works
+#include "liblua/afl_input.h"
+extern char *aflinputfile;
 
 static void display_nmap_version();
 
@@ -666,6 +669,9 @@ void parse_options(int argc, char **argv) {
     {"script-help", required_argument, 0, 0},
     {"script-timeout", required_argument, 0, 0},
 #endif
+	//zl3 adding afl flags
+	{"afl-input-file", required_argument, 0, 0},
+	//zl3 adding afl flags
     {"ip-options", required_argument, 0, 0},
     {"min-rate", required_argument, 0, 0},
     {"max-rate", required_argument, 0, 0},
@@ -682,6 +688,13 @@ void parse_options(int argc, char **argv) {
   while ((arg = getopt_long_only(argc, argv, "46Ab:D:d::e:Ffg:hIi:M:m:nO::o:P:p:qRrS:s:T:Vv::", long_options, &option_index)) != EOF) {
     switch (arg) {
     case 0:
+    	//zl3 add afl flag
+    	if(strcmp(long_options[option_index].name, "afl-input-file") == 0){
+    		printf("zl3 add afl flag entered\n");
+    		aflinputfile = strdup(optarg);
+    		printf("zl3 add afl flag finished\n");
+    	}else
+    	//zl3 add afl flag
 #ifndef NOLUA
       if (strcmp(long_options[option_index].name, "script") == 0) {
         o.script = true;

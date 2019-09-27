@@ -75,18 +75,32 @@ end
 
 -- check if the response we got indicates that fuzzing was successful
 local function check_response(response)
-  --zl3
+  --zl3 crete
   print("make concolic1")
   --print(response_string.body)
   --print(type(response_string.body))
-  crete.mconcolic(response.body,11)
+  --crete.mconcolic(response.body,12)
+ 
+  --zl3 afl
+  print('222222')
+  print(response.body)
+  local copy_body = crete.aflreadfile(12)
+  --print("copy_body is ")
+  --print(copy_body)
+  response.body = copy_body 
+  
   if not(response.body) or response.status==500 then
     return true
   end
   --if response.body:find("[Ss][Ee][Rr][Vv][Ee][Rr]%s*[Ee][Rr][Rr][Oo][Rr]") or response.body:find("[Ss][Qq][Ll]%s*[Ee][Rr][Rr][Oo][Rr]") then
-  if response.body:find("[Ss][Ee][Rr][Vv][Ee][Rr] [Ee][Rr][Rr][Oo][Rr]") then
+  if response.body:find("SERVER ERROR") then
     return true
   end
+  
+  --zl3
+  crete.mexit(0)
+  --zl3
+  
   return false
 end
 
@@ -119,6 +133,7 @@ end
 local charset = generate_charset(33,126)
 local charset_number = generate_charset(49,57) -- ascii 49 -> 1; 57 -> 9
 
+
 local function fuzz_form(form, minlen, maxlen, host, port, path)
   local affected_fields = {}
   local postdata = generate_safe_postdata(form)
@@ -128,7 +143,8 @@ local function fuzz_form(form, minlen, maxlen, host, port, path)
 
   -- determine the path where the form needs to be submitted
   local form_submission_path
-  if action_absolute then
+  --zl3 replace action_absolute with true
+  if true then
     form_submission_path = form["action"]
   else
     local path_cropped = string.match(path, "(.*/).*")
@@ -146,7 +162,6 @@ local function fuzz_form(form, minlen, maxlen, host, port, path)
     sending_function = function(data)
       zl_response = http.post(host, port, form_submission_path, nil, nil, data)
       print(zl_response.status)
-      --print(zl_response.body)
       return zl_response 
     end
     --return http.post(host, port, form_submission_path, nil, nil, data) end
@@ -170,6 +185,7 @@ local function fuzz_form(form, minlen, maxlen, host, port, path)
       --zl3
       --print(postdata[field["name"]])
       response_string = sending_function(postdata)
+
       --then with a number
       --postdata[field["name"]] = stdnse.generate_random_string(i, charset_number)
       --response_number = sending_function(postdata)
@@ -216,7 +232,8 @@ end
 portrule = shortport.http
 
 function action(host, port)
-  local targets = stdnse.get_script_args('http-form-fuzzer.targets') or {{path="/demo.html"}}
+  local targets = stdnse.get_script_args('http-form-fuzzer.targets') or {{path="/loginclass/login.jsp"}}
+
   local return_table = {}
   --zl3
   local minlen = stdnse.get_script_args("http-form-fuzzer.minlength") or 11

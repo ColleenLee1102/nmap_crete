@@ -671,7 +671,8 @@ static void receive_callback (nsock_pool nsp, nsock_event nse, void *udata)
     //zl3
     if(o.current_scantype == SCRIPT_SCAN){
 
-    	lua_pushlstring3(L, str, len);
+    	//lua_pushlstring3(L, str, len);
+    	lua_pushlstring(L, str, len);
 
     }else{
     	lua_pushlstring(L, str, len);

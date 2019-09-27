@@ -12,6 +12,13 @@
 #include <stddef.h>
 #include <crete/custom_instr.h>
 
+#include <stdio.h>
+#include <stdlib.h>
+
+//zl3 add afl flag
+#include "afl_input.h"
+extern char *aflinputfile = "";
+
 static int mconcolic (lua_State *L) {
   lua_Integer len;  /* concolic string length */
   len = luaL_checkinteger(L, 2);
@@ -24,8 +31,37 @@ static int mconcolic (lua_State *L) {
   return 0;
 }
 
+static int aflreadfile (lua_State *L) {
+  luaL_Buffer b;
+  FILE *aflfile;
+
+  lua_Integer len;
+  len = luaL_checkinteger(L,1);
+  char *buffer = (char *) malloc(len);
+
+  //aflfile = fopen("/home/zheli/test/afl-nmap/testcase_dir_1/1.txt", "r");
+  printf("afl input file path is %s\n", aflinputfile);
+  aflfile = fopen(aflinputfile, "r");
+
+  if(aflfile == NULL){
+	  printf("aflreadfile failed to read file\n");
+	  exit(EXIT_FAILURE);
+  }
+  size_t t = fread(buffer, len, 1,  aflfile);
+  printf("t is %d\n",t);
+  if(t > 0){
+	  luaL_buffinit(L, &b);
+	  luaL_addlstring(&b, buffer, len);
+  }
+  fclose(aflfile);
+  printf("afl buffer read is %s\n", buffer);
+  luaL_pushresult(&b);
+  return 1;
+}
+
 static const luaL_Reg crete_funcs[] = {
   {"mconcolic", mconcolic},
+  {"aflreadfile", aflreadfile},
   {NULL, NULL}
 };
 
