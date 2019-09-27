@@ -31,7 +31,7 @@
 
 //zl3 symbolic
 #include <stddef.h>
-//#include <crete/custom_instr.h>
+#include <crete/custom_instr.h>
 //zl3 symbolic
 
 const char lua_ident[] =
@@ -484,7 +484,6 @@ LUA_API const char *lua_pushlstring (lua_State *L, const char *s, size_t len) {
   lua_lock(L);
   ts = (len == 0) ? luaS_new(L, "") : luaS_newlstr(L, s, len);
   setsvalue2s(L, L->top, ts);
-  L->scan_flag = 0;//zl3
   api_incr_top(L);
   luaC_checkGC(L);
   lua_unlock(L);
@@ -494,44 +493,55 @@ LUA_API const char *lua_pushlstring (lua_State *L, const char *s, size_t len) {
 LUA_API char *lua_pushlstring3 (lua_State *L, const char *s, size_t len) {
   TString *ts;
   lua_lock(L);
-  //
+
+  //zl3
+  printf("entered lua_pushlstring3\n");
+  //printf("original s is %s\n",s);
   char* pch;
   pch = strtok(s, "\r\n");
+  size_t m_len = strlen(s);
+
   int i = 0;
+  char* temp;
+  size_t temp_len;
   while (pch != NULL)
   {
   	if(i ==1){
   		size_t sym_len = strlen(pch);
-  		//crete_make_concolic(pch, sym_len, "lua_ultimate");
-//  		char tem_buff[sym_len];
-//  		memset(tem_buff, 's', sym_len);
-//  		memcpy(pch, tem_buff,sym_len);
-  		printf("sym_len is %d\n", sym_len);
-  		printf("pch_len is %d\n", strlen(pch));
+  		//printf("sym_len is %d\n", sym_len);
+  		//printf("pch_len is %d\n", strlen(pch));
+  		temp = pch;
+  		temp_len = sym_len;
+  		break;
   	}
-  	printf("%d, %s\n", i, pch);
+  	//printf("%d, %s\n", i, pch);
   	pch = strtok (NULL, "\r\n");
   	i++;
   }
-  //
+
+  //resize length of string in index 2 into 11
+  size_t rem_size = len- ((temp+temp_len+2-1)- s+ 1);
+  strncpy(temp+11, "\r\n", 2);
+  memmove(temp+11+2,temp+temp_len+2, rem_size);
+
+  size_t last_char = rem_size+ 11+ 2;
+  temp[last_char]='\0';
+  strncpy(s+strlen(s), "\r\n", 2);
+  //printf("after changing s is %sfinished\n",s);
+  //len has been changed
+  len = strlen(s);
+  //zl3
+
   ts = (len == 0) ? luaS_new(L, "") : luaS_newlstr(L, s, len);
   setsvalue2s(L, L->top, ts);
   api_incr_top(L);
   luaC_checkGC(L);
   lua_unlock(L);
 
-  //set marker here:
-//  char* p = strtok(s, "\r\n");
-//  p = strtok(NULL, "\r\n");
-//  global_State *g = G(L);
-//  g->ad_start = getstr(ts);
-//  g->ad_end = getstr(ts) + len;
-//  g->sym_buff = malloc(strlen(p)*sizeof(char));
-//  memcpy((g->sym_buff), p, strlen(p));
-//  puts(p);
-//  printf("sym_buff is %s\n", g->sym_buff);
-//  g->sym_marker = 111;
-  //set marker end
+  //zl3 make symbolic
+  char *sym_strstruct = getstr(ts);
+  //crete_make_concolic(sym_strstruct+ m_len+ 2, 11, "lua_strstruct");
+  //zl3
 
   return getstr(ts);
 }

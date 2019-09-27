@@ -426,7 +426,7 @@ int luaV_equalobj (lua_State *L, const TValue *t1, const TValue *t2) {
     case LUA_TLIGHTUSERDATA: return pvalue(t1) == pvalue(t2);
     case LUA_TLCF: return fvalue(t1) == fvalue(t2);
     case LUA_TSHRSTR:
-    	//zl3
+    	//zl3 277 <-> 22
     	//if(L != NULL && L->scan_flag == 99 && L->special_flag == 101){
     	if(b_value == 11 && c_value == 277){
     		printf("short entered make concolic branches, b_value is %d, c_value is %d\n", b_value, c_value);
@@ -492,6 +492,7 @@ int luaV_equalobj (lua_State *L, const TValue *t1, const TValue *t2) {
     	if(b_value == 11 && c_value == 277){
     		//printf("zl3 long1\n");
     		printf("long entered make concolic branches, b_value is %d, c_value is %d\n", b_value, c_value);
+    		//return luaS_eqlngstr1(tsvalue(t1), tsvalue(t2));
     		return luaS_eqlngstr(tsvalue(t1), tsvalue(t2));
 
     	}else{
@@ -851,6 +852,10 @@ void luaV_finishOp (lua_State *L) {
 #define gettableProtected(L,t,k,v)  { const TValue *slot; \
   if (luaV_fastget(L,t,k,slot,luaH_get)) { setobj2s(L, v, slot); } \
   else Protect(luaV_finishget(L,t,k,v,slot)); }
+//zl3
+#define gettableProtected1(L,t,k,v)  { const TValue *slot; \
+  if (luaV_fastget(L,t,k,slot,luaH_get1)) { setobj2s(L, v, slot); } \
+  else Protect(luaV_finishget(L,t,k,v,slot)); }
 
 
 /* same for 'luaV_settable' */
@@ -962,6 +967,18 @@ void luaV_execute (lua_State *L) {
       vmcase(OP_GETTABLE) {
         StkId rb = RB(i);
         TValue *rc = RKC(i);
+        //zl3
+        b_value = GETARG_B(i);
+        c_value = GETARG_C(i);
+        //276 <> 21 pinpoint make concolic
+        /**
+        if(b_value == 10 && c_value == 277){
+        	printf("rawheader table\n");
+        	gettableProtected1(L, rb, rc, ra);
+        }else{
+        	gettableProtected(L, rb, rc, ra);
+        }
+        **/
         gettableProtected(L, rb, rc, ra);
         vmbreak;
       }

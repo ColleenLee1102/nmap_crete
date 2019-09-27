@@ -3,6 +3,8 @@ local nmap = require "nmap"
 local shortport = require "shortport"
 local stdnse = require "stdnse"
 local table = require "table"
+--zl3 crete lib
+local crete = require "crete"
 
 description = [[
 Performs a HEAD request for the root folder ("/") of a web server and displays the HTTP headers returned.
@@ -72,19 +74,27 @@ action = function(host, port)
 --    print "branch 22"  
 --  end
 
-
-   local string1 = nil
 --   local t = result.rawheader
 --   for index, data in ipairs(t) do
 --       print "zheli table" 
 --       print(index,data)
 --   end
-   
---  local com_str = "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
-   if result.rawheader[1]== 'ssssssssssssssssssssssssssssssssssss' then
-    return teststring1
+
+-- add complexity
+  crete.mconcolic(result.rawheader[1],11)
+  if result.rawheader[1]== 'sssssssssss' then
+--   if duplicate == 'sssssssssss' then
+    print(teststring1)
   else
-    return teststring2  
+    print(teststring2)  
+  end
+  
+  local duplicate = result.rawheader[1]
+    
+  if duplicate == 'abcabcabcqq' then
+    return "complex1"
+  else
+    return "complex2"
   end
 
 --  table.insert(result.rawheader, "(Request type: " .. request_type .. ")")

@@ -30,11 +30,11 @@
 //zl3 read test_case
 #include <string.h>
 #include <stdio.h>
-#include <crete/test_case.h>
-#include <boost/filesystem/fstream.hpp>
-#include <boost/archive/binary_oarchive.hpp>
-#include <boost/archive/binary_iarchive.hpp>
-#include <boost/serialization/vector.hpp>
+//#include <crete/test_case.h>
+//#include <boost/filesystem/fstream.hpp>
+//#include <boost/archive/binary_oarchive.hpp>
+//#include <boost/archive/binary_iarchive.hpp>
+//#include <boost/serialization/vector.hpp>
 #include <stddef.h>
 #include <crete/custom_instr.h>
 //zl3
@@ -618,6 +618,7 @@ static int l_sendto (lua_State *L)
 }
 
 //zl3 reading test case
+/**
 char* read_testcase_in_buff(){
 	FILE *fp;
 	char path_temp[255];
@@ -653,6 +654,7 @@ char* read_testcase_in_buff(){
    }
 	return buff;
 }
+**/
 //zl3 reading test case
 
 static void receive_callback (nsock_pool nsp, nsock_event nse, void *udata)
@@ -669,31 +671,13 @@ static void receive_callback (nsock_pool nsp, nsock_event nse, void *udata)
     //zl3
     if(o.current_scantype == SCRIPT_SCAN){
 
-    	char* sym_str = lua_pushlstring3(L, str, len);
-    	//printf("sym_str is %s\n str is %s\n", sym_str, str);
+    	//lua_pushlstring3(L, str, len);
+    	lua_pushlstring(L, str, len);
 
-//        char* pch;
-//        pch = strtok(sym_str, "\r\n");
-//        int i = 0;
-//        while (pch != NULL)
-//        {
-//        	if(i ==1){
-//        		size_t sym_len = strlen(pch);
-//        		//crete_make_concolic(pch, sym_len, "lua_ultimate");
-//        		memcpy(pch, "sssssssssssssssssssssssssssssssssss", sym_len);
-//        		printf("sym_len is %d\n", sym_len);
-//        	}
-//        	printf("%d, %s\n", i, pch);
-//        	pch = strtok (NULL, "\r\n");
-//        	i++;
-//        }
-
-    	//crete_make_concolic(sym_str, strlen, "lua_reading");
-    	//char* test_case = read_testcase_in_buff();
-    	//lua_pushlstring_test(L,str,len, test_case);
     }else{
     	lua_pushlstring(L, str, len);
     }
+    //zl3
     //lua_pushlstring(L, str, len);
     nse_restore(L, 2);
   }
